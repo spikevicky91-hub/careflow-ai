@@ -6,6 +6,8 @@ CareFlow AI is a hospital operations analytics project I built to explore how ma
 
 The goal is not to replace clinical decision-making, but to provide an operational view of what may need attention.
 
+🌐 **Live Demo:** https://careflow-ai-ltezpynsctncgkzff4nisf.streamlit.app/
+
 ## 🚀 What It Does
 
 - 📊 Tracks patient arrivals, admissions, occupancy, wait times, and available beds
