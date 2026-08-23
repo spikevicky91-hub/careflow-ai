@@ -1,4 +1,7 @@
-import ollama
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 
 MODEL_NAME = "llama3.2:3b"
@@ -18,7 +21,30 @@ def get_ai_analysis(
     """
     Generate a business-friendly hospital operations
     analysis using the local Ollama model.
+
+    If Ollama is unavailable, return a clear message
+    instead of stopping the Streamlit application.
     """
+
+    if ollama is None:
+
+        return """
+### Local AI Analyst Unavailable
+
+The CareFlow AI dashboard is running, but the local
+Ollama service is not available in this environment.
+
+The forecasting, capacity analysis, and staffing
+simulation continue to work normally.
+
+To use the AI Operations Analyst locally, install
+Ollama and run:
+
+`ollama pull llama3.2:3b`
+
+Then start CareFlow AI again.
+"""
+
 
     prompt = f"""
 You are a hospital operations analyst.
@@ -94,14 +120,38 @@ Keep the response concise and easy for a
 non-technical manager to understand.
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-    )
 
-    return response["message"]["content"]
+    try:
+
+        response = ollama.chat(
+            model=MODEL_NAME,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+        )
+
+        return response["message"]["content"]
+
+    except Exception as exc:
+
+        return f"""
+### Local AI Analyst Unavailable
+
+The dashboard is working, but the local Ollama model
+could not be reached.
+
+The forecasting, capacity analysis, and staffing
+simulation continue to work normally.
+
+Local AI error:
+
+`{str(exc)}`
+
+To use the AI analyst locally, make sure Ollama is
+running and that the Llama 3.2 model is available:
+
+`ollama pull llama3.2:3b`
+"""
